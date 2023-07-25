@@ -1,7 +1,6 @@
 package com.example.Employee.Management.Backend.Roles.controller;
 
-import com.example.Employee.Management.Backend.Roles.db.CrudOp;
-import com.example.Employee.Management.Backend.Roles.model.Role;
+import com.example.Employee.Management.Backend.Roles.db.RolesCrudOp;
 import com.example.Employee.Management.Backend.Roles.model.RoleDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +17,13 @@ import java.util.Map;
 @RequestMapping("/roles")
 public class RoleController {
     @Autowired
-    CrudOp crudOpp;
+    RolesCrudOp rolesCrudOp;
 
     @GetMapping("/getAllRoles")
     public ResponseEntity<List<Map<String, Object>>> getAllRoles() {
         try {
             List<Map<String, Object>> rolesList = new ArrayList<>();
-            ResultSet resultSet = crudOpp.getAllRoles();
+            ResultSet resultSet = rolesCrudOp.getAllRoles();
             while (resultSet.next()) {
                 Map<String, Object> role = new HashMap<>();
                 role.put("id", resultSet.getInt("id"));
@@ -41,7 +40,7 @@ public class RoleController {
     public  ResponseEntity<RoleDb> getRoleByID(@PathVariable(value = "id") int id){
         try{
             RoleDb roleDb=new RoleDb();
-            ResultSet rs= crudOpp.getRoleById(id);
+            ResultSet rs= rolesCrudOp.getRoleById(id);
             if(rs.next()){
                 roleDb.setId(rs.getInt("id"));
                 roleDb.setName(rs.getString("name"));

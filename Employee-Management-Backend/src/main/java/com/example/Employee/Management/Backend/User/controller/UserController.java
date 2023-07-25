@@ -1,6 +1,6 @@
 package com.example.Employee.Management.Backend.User.controller;
 
-import com.example.Employee.Management.Backend.User.db.CrudOpp;
+import com.example.Employee.Management.Backend.User.db.UserCrudOpp;
 import com.example.Employee.Management.Backend.User.model.UserDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    CrudOpp crudOpp;
+    UserCrudOpp userCrudOpp;
 
     @PostMapping("/insertUser")
     public ResponseEntity<String> insertUserData(@RequestBody Map<String,Object> data){
@@ -30,7 +30,7 @@ public class UserController {
             userDb.setGender((String) data.get("gender"));
             userDb.setUserName((String) data.get("user_name"));
             userDb.setPassword((String) data.get("password"));
-            crudOpp.insertData(userDb.getId(), userDb.getName(), userDb.getGender(), userDb.getUserName(), userDb.getPassword());
+            userCrudOpp.insertData(userDb.getId(), userDb.getName(), userDb.getGender(), userDb.getUserName(), userDb.getPassword());
             return ResponseEntity.ok("User data added successfully");
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity<List<Map<String,Object>>> getAllUser(){
         try{
             List<Map<String,Object>> usersList=new ArrayList<>();
-            ResultSet rs=crudOpp.getAllUsersData();
+            ResultSet rs= userCrudOpp.getAllUsersData();
             while (rs.next()){
                 Map<String,Object> user=new HashMap<>();
                 user.put("id",rs.getInt("id"));
@@ -59,7 +59,7 @@ public class UserController {
     @PutMapping("/assignRole/{id}/{role_name}")
     public ResponseEntity<String> assignRoleToUser(@PathVariable(name = "id") int id,@PathVariable(name = "role_name") String role_name){
         try{
-            int numberOfUsersUpdate=crudOpp.assignRoleById(id,role_name);
+            int numberOfUsersUpdate= userCrudOpp.assignRoleById(id,role_name);
             if(numberOfUsersUpdate==1)
                 return ResponseEntity.ok("Assigned role successfully...........");
             else
@@ -72,7 +72,7 @@ public class UserController {
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<String> deleteUserById(@PathVariable(name = "id") int id){
         try{
-            int numberOfUsersDeleted=crudOpp.deleteUserById(id);
+            int numberOfUsersDeleted= userCrudOpp.deleteUserById(id);
             if(numberOfUsersDeleted==1)
                 return ResponseEntity.ok("User deleted successfully...........");
             else

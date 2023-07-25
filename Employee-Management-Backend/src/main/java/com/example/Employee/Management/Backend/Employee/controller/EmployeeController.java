@@ -1,6 +1,6 @@
 package com.example.Employee.Management.Backend.Employee.controller;
 
-import com.example.Employee.Management.Backend.Employee.db.CrudOp;
+import com.example.Employee.Management.Backend.Employee.db.EmployeeCrudOp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,7 @@ import java.util.Map;
 @RequestMapping("/employee")
 public class EmployeeController {
     @Autowired
-    CrudOp crudOpp;
+    EmployeeCrudOp employeeCrudOp;
     @PostMapping("/createEmp")
     public ResponseEntity<String> createEmployee(@RequestBody Map<String,Object> record) {
         try {
@@ -27,7 +27,7 @@ public class EmployeeController {
             String gender = (String) record.get("gender");
             String department = (String) record.get("department");
             long salary = (int) record.get("salary");
-            crudOpp.insertData(id, name, gender, department, salary);
+            employeeCrudOp.insertData(id, name, gender, department, salary);
             return ResponseEntity.ok("Employee added successfully");
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
@@ -38,7 +38,7 @@ public class EmployeeController {
     @DeleteMapping("/deleteEmp/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") int id){
         try {
-            int deletedRows=crudOpp.deleteEmployeeById(id);
+            int deletedRows= employeeCrudOp.deleteEmployeeById(id);
             if (deletedRows>0){
                 return ResponseEntity.ok("Employee deleted");
             }else {
@@ -52,7 +52,7 @@ public class EmployeeController {
     @GetMapping("/getEmployee/{id}")
     public ResponseEntity<Map<String,Object>> getEmployee(@PathVariable("id") int id)  {
         try {
-            ResultSet resultSet = crudOpp.getEmployeeDataByID(id);
+            ResultSet resultSet = employeeCrudOp.getEmployeeDataByID(id);
             if (resultSet.next()){
                 Map<String,Object> data=new HashMap<>();
                 data.put("id",resultSet.getInt("id"));
@@ -72,7 +72,7 @@ public class EmployeeController {
     public ResponseEntity<List<Map<String,Object>>> getAllEmployees(){
         try {
             List<Map<String,Object>> employeeList=new ArrayList<>();
-            ResultSet resultSet=crudOpp.getAllEmployeesData();
+            ResultSet resultSet= employeeCrudOp.getAllEmployeesData();
             while (resultSet.next()){
                 Map<String, Object> employee=new HashMap<>();
                 employee.put("id",resultSet.getInt("id"));
@@ -93,7 +93,7 @@ public class EmployeeController {
         try{
             int numberOfUpdatedRecords=0;
             for (String key: data.keySet()) {
-                numberOfUpdatedRecords=crudOpp.updateEmployeeDataById(id,key, data.get(key));
+                numberOfUpdatedRecords= employeeCrudOp.updateEmployeeDataById(id,key, data.get(key));
             }
             if (numberOfUpdatedRecords>0){
                 return ResponseEntity.ok("Data updated");
